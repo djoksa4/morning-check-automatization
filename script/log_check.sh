@@ -6,5 +6,5 @@ directory="/home/adminuser/morning-check-automatization"
 # List files in the directory and then count them
 file_count=$(find "$directory" -type f | wc -l)
 
-# Output the number of files
+# Output number of files
 echo "Number of files in $directory: $file_count"
