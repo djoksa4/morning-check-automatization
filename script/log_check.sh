@@ -16,10 +16,10 @@ if [ "$file_count" -gt 20 ]; then
     echo "Starting deletion of $file_count files in $directory..."
     
     # Delete all files in the directory
-    find "$directory" -type f -exec rm -f {} \;
+    find "$directory" -maxdepth 1 -type f -exec rm -f {} \;
     
     # Use 'find' again to count the remaining files after deletion
-    new_file_count=$(find "$directory" -type f | wc -l)
+    new_file_count=$(find "$directory" -maxdepth 1 -type f | wc -l)
     
     # Output the information about file deletion and the new file count
     echo "Deleted $file_count files in $directory."
