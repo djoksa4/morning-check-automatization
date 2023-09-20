@@ -11,7 +11,7 @@ echo "Number of files in $directory: $file_count"
 
 
 # Check if the file count is greater than 1000
-if [ "$file_count" -gt 20 ]; then
+if [ "$file_count" -gt 10 ]; then
     # Notify that file deletion is starting
     echo "Starting deletion of $file_count files in $directory..."
     
