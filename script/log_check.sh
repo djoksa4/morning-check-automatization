@@ -13,15 +13,17 @@ current_datetime=$(date "+%Y-%m-%d %H:%M:%S")
 file_count=$(find "$directory_to_check" -maxdepth 1 -type f | wc -l)
 
 # Log the execution of the script
-echo "$current_datetime - Script executed" >> "$log_file"
+echo "$current_datetime - Script executed!" >> "$log_file"
 
 # Check the file count
 if [ "$file_count" -lt 10 ]; then
     # If less than 10 files, log and do not delete
     echo "$current_datetime - $file_count files found. Deletion not necessary!" >> "$log_file"
+    echo "====================================================================" >> "$log_file"
 else
     # If 10 or more files, delete only files (not directories) and log the deletion
     echo "$current_datetime - $file_count files found. Deleting all files." >> "$log_file"
     find "$directory_to_check" -maxdepth 1 -type f -exec rm -f {} \;
     echo "$current_datetime - Deleted $file_count files." >> "$log_file"
+    echo "====================================================================" >> "$log_file"
 fi
