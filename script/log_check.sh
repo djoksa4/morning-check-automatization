@@ -1,30 +1,27 @@
 #!/bin/bash
 
-# Specify the directory you want to count files in
-directory="/home/adminuser/morning-check-automatization"
+# Define the log file path
+log_file="/home/adminuser/morning-check-automatization/logs/deletion_log.log"
 
-# List files in the directory and then count them
-file_count=$(find "$directory" -maxdepth 1 -type f | wc -l)
+# Define the directory to check
+directory_to_check="/home/adminuser/morning-check-automatization/files"
 
-# Output number of files
-echo "Number of files in $directory: $file_count"
+# Get the current date and time
+current_datetime=$(date "+%Y-%m-%d %H:%M:%S")
 
+# Count the number of files in the directory (only in the top-level directory)
+file_count=$(find "$directory_to_check" -maxdepth 1 -type f | wc -l)
 
-# Check if the file count is greater than 1000
-if [ "$file_count" -gt 10 ]; then
-    # Notify that file deletion is starting
-    echo "Starting deletion of $file_count files in $directory..."
-    
-    # Delete all files in the directory
-    find "$directory" -maxdepth 1 -type f -exec rm -f {} \;
-    
-    # Use 'find' again to count the remaining files after deletion
-    new_file_count=$(find "$directory" -maxdepth 1 -type f | wc -l)
-    
-    # Output the information about file deletion and the new file count
-    echo "Deleted $file_count files in $directory."
-    echo "New number of files in $directory: $new_file_count"
+# Log the execution of the script
+echo "$current_datetime - Script executed" >> "$log_file"
+
+# Check the file count
+if [ "$file_count" -lt 10 ]; then
+    # If less than 10 files, log and do not delete
+    echo "$current_datetime - $file_count files found. Deletion not necessary!" >> "$log_file"
 else
-    # Output message when file deletion is not needed
-    echo "File deletion not needed."
+    # If 10 or more files, delete only files (not directories) and log the deletion
+    echo "$current_datetime - $file_count files found. Deleting all files." >> "$log_file"
+    find "$directory_to_check" -maxdepth 1 -type f -exec rm -f {} \;
+    echo "$current_datetime - Deleted $file_count files." >> "$log_file"
 fi
