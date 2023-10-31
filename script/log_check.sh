@@ -1,29 +1,53 @@
 #!/bin/bash
 
 # Define the log file path
-log_file="/home/adminuser/morning-check-automatization/logs/deletion_log.log"
+log_file="/home/wl12/morning-check-automatization/deletion-logs/deletion_log.log"
 
-# Define the directory to check
-directory_to_check="/home/adminuser/morning-check-automatization/files"
+# Define the directory paths
+app_logs_directory="/home/wl12/morning-check-automatization/files/spimi/logs/weblogic/fcbi0/fcubs123/"
+front_sys_directory="/home/wl12/morning-check-automatization/files/spimi/beaConfigManaged/wls12.2.1.4/userApps/fcbi0/config/JS_UIXML/Script/JS/SYS/"
+archive_directory="home/wl12/morning-check-automatization/files/archive/"
 
 # Get the current date and time
 current_datetime=$(date "+%Y-%m-%d %H:%M:%S")
 
-# Count the number of files in the directory (only in the top-level directory)
-file_count=$(find "$directory_to_check" -maxdepth 1 -type f | wc -l)
+
+
 
 # Log the execution of the script
-echo "$current_datetime - Script executed!" >> "$log_file"
+echo "$current_datetime - Script executing..." >> "$log_file"
 
-# Check the file count
-if [ "$file_count" -lt 10 ]; then
-    # If less than 10 files, log and do not delete
-    echo "$current_datetime - $file_count files found. Deletion not necessary!" >> "$log_file"
+# Count the number of SYS files, delete them and log the deletion
+front_sys_file_count=$(find "$front_sys_directory" -maxdepth 1 -type f | wc -l)
+rm -v "$front_sys_directory"/*js
+echo "$current_datetime - $front_sys_file_count Frontend SYS files found and deleted." >> "$log_file" 
+
+
+
+
+# Move all the app log files older than 1 day to archive
+echo "$current_datetime - Moving app log files older than 1 day to archive..." >> "$log_file"
+moved_files_count=0
+find "$app_logs_directory" -type f ! -newermt $(date +%Y-%m-%d) -exec mv {} "$archive_directory" \; -exec sh -c 'moved_files_count=$((moved_files_count + 1))' \;
+echo "$current_datetime - Found and moved $moved_files_count app log files to archive." >> "$log_file"
+
+# Check the number of files in the archive AFTER the move from app_logs_dir
+new_archive_file_count=$(find "$archive_directory" -maxdepth 1 -type f | wc -l)
+
+# If there are more than 10,000 files in the archive_directory after the move, log an error and exit
+if [ "$new_archive_file_count" -gt 10000 ]; then
+    echo "$current_datetime - Error: Unexpectedly large amount of files present in the archive ($new_archive_file_count files). Aborting." >> "$log_file"
     echo "====================================================================" >> "$log_file"
+    exit 1
 else
-    # If 10 or more files, delete only files (not directories) and log the deletion
-    echo "$current_datetime - $file_count files found. Deleting all files." >> "$log_file"
-    find "$directory_to_check" -maxdepth 1 -type f -exec rm -f {} \;
-    echo "$current_datetime - Deleted $file_count files." >> "$log_file"
+    # Print the number of files present in the archive_directory
+    echo "$current_datetime - Total of $new_archive_file_count app log files found in the archive directory."
+    
+    # Delete files with timestamps older than 7 days in the archive_directory
+    find "$archive_directory" -type f -mtime +7 -exec rm {} \;
+    
+    # Print the new number of files after deletion
+    newest_archive_file_count=$(find "$archive_directory" -maxdepth 1 -type f | wc -l)
+    echo "$current_datetime - Total of $newest_archive_file_count app log files left in the archive directory after deleting logs older than 7 days."
     echo "====================================================================" >> "$log_file"
 fi
