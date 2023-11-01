@@ -6,7 +6,7 @@ log_file="/home/wl12/morning-check-automatization/deletion-logs/deletion_log.log
 # Define the directory paths
 app_logs_directory="/home/wl12/morning-check-automatization/files/spimi/logs/weblogic/fcbi0/fcubs123/"
 front_sys_directory="/home/wl12/morning-check-automatization/files/spimi/beaConfigManaged/wls12.2.1.4/userApps/fcbi0/config/JS_UIXML/Script/JS/SYS/"
-archive_directory="home/wl12/morning-check-automatization/files/archive/"
+archive_directory="/home/wl12/morning-check-automatization/files/archive/"
 
 # Get the current date and time
 current_datetime=$(date "+%Y-%m-%d %H:%M:%S")
