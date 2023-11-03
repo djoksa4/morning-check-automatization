@@ -19,7 +19,7 @@ echo "$current_datetime - Script executing..." >> "$log_file"
 
 # Count the number of SYS files, delete them and log the deletion
 front_sys_file_count=$(find "$front_sys_directory" -maxdepth 1 -type f | wc -l)
-rm -v "$front_sys_directory"/*js
+rm -v "$front_sys_directory"*js
 echo "$current_datetime - $front_sys_file_count Frontend SYS files found and deleted." >> "$log_file" 
 
 
