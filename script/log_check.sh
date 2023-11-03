@@ -45,13 +45,13 @@ if [ "$archive_file_count" -gt 10000 ]; then
     exit 1
 else
     # Print the number of files present in the archive_directory
-    echo "$current_datetime - Total of $archive_file_count app log files found in the archive directory. Deleting files older than 7 days..."
+    echo "$current_datetime - Total of $archive_file_count app log files found in the archive directory. Deleting files older than 7 days..." >> "$log_file"
     
     # Delete files with timestamps older than 7 days in the archive_directory
     find "$archive_directory" -type f -mtime +7 -exec rm {} \;
     
     # Print the new number of files after deletion
     new_archive_file_count=$(find "$archive_directory" -maxdepth 1 -type f | wc -l)
-    echo "$current_datetime - Total of $new_archive_file_count app log files left in the archive directory after deletion."
+    echo "$current_datetime - Total of $new_archive_file_count app log files left in the archive directory after deletion." >> "$log_file"
     echo "====================================================================" >> "$log_file"
 fi
