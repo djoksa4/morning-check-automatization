@@ -1,3 +1,5 @@
+#!/usr/bin/env python 
+
 import os
 import shutil
 from datetime import datetime
@@ -5,7 +7,7 @@ import glob
 
 #### Paths #####################################################################################################
 # Define the log file path
-log_file = "/home/wl12/morning-check-automatization/deletion-logs/deletion_log.log"
+log_file = "/home/wl12/morning-check-automatization/deletion-logs/GW_deletion_log.log"
 
 # Define the directory paths
 gw_logs_dir = "/spimi/logs/weblogic/fcbi0gw/Gateway/"
@@ -29,7 +31,7 @@ for dir_name in dir_name_array:
     gw_logs_dir_path = os.path.join(gw_logs_dir, dir_name)
     gw_archive_dir_path = os.path.join(archive_dir, dir_name)
 
-    gw_logs_files = glob.glob(f"{gw_logs_dir_path}*.*")
+    gw_logs_files = glob.glob(f"{gw_logs_dir_path}/*.*")
     gw_logs_files_count = len(gw_logs_files)
     
     with open(log_file, "a") as log:
@@ -41,7 +43,7 @@ for dir_name in dir_name_array:
         if os.path.isfile(f):
             file_time = os.path.getmtime(f)
             file_age_days = (datetime.now() - datetime.fromtimestamp(file_time)).days
-            if file_age_days > 1 and (f.endswith('.gz') or f.endswith('.log')):
+            if file_age_days > 1 and ('.gz' in f or '.log' in f):
                 shutil.move(f, gw_archive_dir_path)
                 moved_files_count += 1
 

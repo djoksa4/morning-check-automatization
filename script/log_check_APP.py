@@ -1,3 +1,5 @@
+#!/usr/bin/env python 
+
 import os
 import glob
 from datetime import datetime
@@ -5,7 +7,7 @@ import shutil
 
 #### Paths #####################################################################################################
 # Define the log file path
-log_file = "/home/wl12/morning-check-automatization/deletion-logs/deletion_log.log"
+log_file = "/home/wl12/morning-check-automatization/deletion-logs/APP_deletion_log.log"
 
 # Define the directory paths
 app_logs_directory = "/spimi/logs/weblogic/fcbi0/fcubs123/"
@@ -54,7 +56,7 @@ for f in app_logs_files:
     if os.path.isfile(f):
         file_time = os.path.getmtime(f)
         file_age_days = (datetime.now() - datetime.fromtimestamp(file_time)).days
-        if file_age_days > 1 and (f.startswith("EMS") or f.startswith("NOTIF") or f.startswith("Scheduler") or f.endswith(".gz")):
+        if file_age_days > 1 and ("EMS" in f or "NOTIF" in f or "Scheduler" in f or ".gz" in f):
             shutil.move(f, archive_directory)
             moved_files_count += 1
 
